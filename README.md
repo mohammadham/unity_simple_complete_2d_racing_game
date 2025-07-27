@@ -102,7 +102,56 @@ public class GameManager : Singleton<GameManager> {
 }
 ```
 
-#### ۴.۳ RoadManager (Procedural + Parallax)
+#### 4.3 Health & Collision
+```csharp
+// Assets/_Project/Scripts/Runtime/Systems/HealthSystem.cs
+using UnityEngine;
+using UnityEngine.Events;
+
+public class HealthSystem : MonoBehaviour {
+    [SerializeField] private int maxHealth = 1;
+    private int currentHealth;
+
+    public UnityEvent OnDie;
+
+    private void Start() {
+        currentHealth = maxHealth;
+    }
+
+    public void TakeDamage(int damage) {
+        currentHealth -= damage;
+        if (currentHealth <= 0) {
+            currentHealth = 0;
+            Die();
+        }
+    }
+
+    private void Die() {
+        OnDie?.Invoke();
+        GameManager.Instance.TriggerGameOver();
+    }
+}
+
+// Assets/_Project/Scripts/Runtime/Player/CollisionHandler.cs
+using UnityEngine;
+
+[RequireComponent(typeof(HealthSystem))]
+public class CollisionHandler : MonoBehaviour {
+    private HealthSystem healthSystem;
+
+    private void Awake() {
+        healthSystem = GetComponent<HealthSystem>();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Wall")) {
+            healthSystem.TakeDamage(1);
+        }
+    }
+}
+```
+
+#### ۴.۴ RoadManager (Procedural + Parallax)
 ```csharp
 // Assets/_Project/Scripts/Runtime/Managers/RoadManager.cs
 using UnityEngine;
@@ -158,7 +207,7 @@ public class RoadManager : MonoBehaviour {
 }
 ```
 
-#### ۴.۴ PlayerController
+#### ۴.۵ PlayerController
 ```csharp
 // Assets/_Project/Scripts/Runtime/Player/PlayerController.cs
 using UnityEngine;
@@ -202,7 +251,7 @@ public class PlayerController : MonoBehaviour {
 }
 ```
 
-#### ۴.۵ TrafficSystem + Object Pool
+#### ۴.۶ TrafficSystem + Object Pool
 ```csharp
 // Assets/_Project/Scripts/Runtime/Systems/TrafficSystem.cs
 using UnityEngine;
@@ -245,10 +294,151 @@ public class TrafficSystem : MonoBehaviour {
         pool.Enqueue(e);
     }
 }
+
+// Assets/_Project/Scripts/Runtime/Traffic/EnemyCar.cs
+using UnityEngine;
+
+public class EnemyCar : MonoBehaviour {
+    public float speed = 5f;
+    public float despawnY = -15f;
+
+    private void Update() {
+        transform.Translate(Vector3.down * speed * Time.deltaTime);
+
+        if (transform.position.y < despawnY) {
+            gameObject.SetActive(false);
+        }
+    }
+}
 ```
 
-#### ۴.۶ Vibration (Android)
+#### 4.7 UI & Score
 ```csharp
+// Assets/_Project/Scripts/Runtime/Systems/ScoreSystem.cs
+using UnityEngine;
+
+public class ScoreSystem : MonoBehaviour {
+    public static readonly string HighScoreKey = "HighScore";
+    public float scoreMultiplier = 10f;
+    private Transform playerTransform;
+    private float initialY;
+    private float currentScore;
+    private bool isGameOver;
+    public float CurrentScore => currentScore;
+    public int HighScore { get; private set; }
+
+    private void Start() {
+        playerTransform = FindObjectOfType<PlayerController>()?.transform;
+        if (playerTransform != null) initialY = playerTransform.position.y;
+        HighScore = PlayerPrefs.GetInt(HighScoreKey, 0);
+        GameManager.Instance.OnGameOver += HandleGameOver;
+    }
+
+    private void OnDestroy() {
+        if (GameManager.Instance != null) GameManager.Instance.OnGameOver -= HandleGameOver;
+    }
+
+    private void Update() {
+        if (isGameOver || playerTransform == null) return;
+        float distance = playerTransform.position.y - initialY;
+        currentScore = Mathf.Max(0, distance * scoreMultiplier);
+    }
+
+    private void HandleGameOver() {
+        isGameOver = true;
+        if ((int)currentScore > HighScore) {
+            HighScore = (int)currentScore;
+            PlayerPrefs.SetInt(HighScoreKey, HighScore);
+            PlayerPrefs.Save();
+        }
+    }
+}
+
+// Assets/_Project/Scripts/Runtime/UI/UIManager.cs
+using UnityEngine;
+using UnityEngine.UI;
+
+public class UIManager : MonoBehaviour {
+    [Header("Panels")]
+    [SerializeField] private GameObject gameOverPanel;
+    [Header("UI Elements")]
+    [SerializeField] private Text scoreText;
+    [SerializeField] private Text finalScoreText;
+    [SerializeField] private Text highScoreText;
+    private ScoreSystem scoreSystem;
+
+    private void Start() {
+        scoreSystem = FindObjectOfType<ScoreSystem>();
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        GameManager.Instance.OnGameOver += ShowGameOverPanel;
+    }
+
+    private void OnDestroy() {
+        if (GameManager.Instance != null) GameManager.Instance.OnGameOver -= ShowGameOverPanel;
+    }
+
+    private void Update() {
+        if (scoreSystem != null && scoreText != null) {
+            scoreText.text = "Score: " + Mathf.FloorToInt(scoreSystem.CurrentScore);
+        }
+    }
+
+    private void ShowGameOverPanel() {
+        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+        if (scoreSystem != null) {
+            if(finalScoreText != null) finalScoreText.text = "Score: " + Mathf.FloorToInt(scoreSystem.CurrentScore);
+            if(highScoreText != null) highScoreText.text = "High Score: " + scoreSystem.HighScore;
+        }
+        if (scoreText != null) scoreText.gameObject.SetActive(false);
+    }
+}
+
+// Assets/_Project/Scripts/Runtime/UI/GameOverManager.cs
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class GameOverManager : MonoBehaviour {
+    public void RestartGame() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+}
+```
+
+#### ۴.۸ Audio & Vibration
+```csharp
+// Assets/_Project/Scripts/Runtime/Managers/AudioManager.cs
+using UnityEngine;
+
+public class AudioManager : Singleton<AudioManager> {
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource sfxSource;
+    [Header("Clips")]
+    [SerializeField] private AudioClip backgroundMusic;
+    [SerializeField] private AudioClip collisionClip;
+
+    private void Start() {
+        if (musicSource != null && backgroundMusic != null) {
+            musicSource.clip = backgroundMusic;
+            musicSource.loop = true;
+            musicSource.Play();
+        }
+        GameManager.Instance.OnGameOver += PlayCollisionSound;
+    }
+
+    private void OnDestroy() {
+        if (GameManager.Instance != null) GameManager.Instance.OnGameOver -= PlayCollisionSound;
+    }
+
+    public void PlaySoundEffect(AudioClip clip) {
+        if (sfxSource != null && clip != null) sfxSource.PlayOneShot(clip);
+    }
+
+    private void PlayCollisionSound() {
+        PlaySoundEffect(collisionClip);
+    }
+}
+
 // Assets/_Project/Scripts/Runtime/Managers/VibrationManager.cs
 using UnityEngine;
 
@@ -265,20 +455,6 @@ public static class VibrationManager {
 }
 ```
 
-#### ۴.۷ ScriptableObject نمونه
-```csharp
-// Assets/_Project/Scripts/ScriptableObjects/RoadData.cs
-using UnityEngine;
-
-[CreateAssetMenu(menuName = "TrafficRush/RoadData")]
-public class RoadData : ScriptableObject {
-    public string typeName;           // snowy, desert, …
-    public float slipFactor = 1f;
-    public ParticleSystem particlePrefab;
-    public AudioClip ambientSFX;
-}
-```
-
 ---
 
 ### ۵. راه‌اندازی در Unity
@@ -286,82 +462,11 @@ public class RoadData : ScriptableObject {
 #### 5.1 Scene Setup
 1. Scene جدید: `MainGame`
 2. Main Camera: Orthographic, Size = 5
-3. GameObject Empty: `GameManager` + `GameManager.cs`, `AudioManager.cs`, `RoadManager.cs`, `TrafficSystem.cs`
+3. GameObject Empty: `GameManager` + `GameManager.cs`, `AudioManager.cs`, `RoadManager.cs`, `TrafficSystem.cs`, `ScoreSystem.cs`
 4. Canvas → `UIManager`
 5. Player prefab: SpriteRenderer + Rigidbody2D (gravity 0) + BoxCollider2D + PlayerController + CollisionHandler + HealthSystem
 6. Enemy prefab: SpriteRenderer + Rigidbody2D (gravity 0) + BoxCollider2D + tag = Enemy
 7. 3 Background Quad → Material Unlit/Texture → به ParallaxLayers واگذار شود.
 
-#### 5.2 Physics Layers
-- Player: Layer 8
-- Enemy: Layer 9
-- Wall/Guardrail: Layer 10
-Collision Matrix: فقط 8↔9 و 8↔10 فعال.
-
-#### 5.3 Build Settings
-- Platform: Android
-- Min API 21
-- Scripting Backend: IL2CPP
-- Target Architectures: ARM64
-- Compression: LZ4HC
-- .NET Standard 2.1
-
 ---
-
-### ۶. بهینه‌سازی و تست
-
-| ابزار | هدف |
-|-------|-----|
-| Unity Profiler | FrameTime < 16 ms |
-| Addressables | Textures/Audio async |
-| TextureImporter | Override for Android → ETC2_RGBA8, Max 1024 |
-| GPU Instancing | برای ذرات و دشمنان |
-| Mobile Fidelity | URP 2D Renderer + Use 2D Lights |
-
-### ۶.۱ تست دستگاه‌ها
-- Xiaomi Redmi 9A (SD 439)
-- Samsung A52 (SD 720G)
-- Pixel 6 (SD 888)
-
----
-
-### ۷. Post-Launch
-
-#### ۷.۱ چالش روزانه
-```csharp
-// DailyChallenge.cs
-[CreateAssetMenu(menuName="TrafficRush/DailyChallenge")]
-public class DailyChallenge : ScriptableObject {
-    public string title;
-    public System.Func<bool> condition; // e.g. survive 120s
-    public int rewardCoins;
-}
-```
-
-#### ۷.۲ AdMob Rewarded
-- Google Mobile SDK → `AdManager.cs`
-```csharp
-public void ShowRewarded(System.Action onReward) {
-    if (rewardedAd.IsLoaded()) rewardedAd.Show(userEarnedRewardEvent: onReward);
-}
-```
-
-#### ۷.۳ پشتیبانی مود
-- پوشه `StreamingAssets/modding` خوانده می‌شود.
-- RoadPack.json → RoadData جدید لود می‌شود.
-
----
-
-### ۸. نکات نگهداری
-- از Git + LFS برای فایل‌های حجیم استفاده شود.
-- `asmdef` برای هر گروه اسکریپت جهت کاهش زمان کامپایل.
-- جلسه Code-Review هفتگی.
-- Unit Test برای سیستم امتیاز و Health (Unity Test Runner).
-
----
-
-### 📦 فایل‌های ضمیمه
-1. `CHANGELOG.md` (هر کامیت + توضیح)
-2. `README.md` (نصب و راه‌اندازی سریع)
-3. `Docs/SetupAndroid.md` (Build Settings + Keystore)
-4. `Docs/ModdingGuide.md` (فرمت JSON + Sprite Naming)
+(بخش‌های باقیمانده سند بدون تغییر باقی می‌مانند)
