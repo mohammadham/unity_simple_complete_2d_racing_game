@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity Racing Game Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-block {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        .file-structure {
+            background-color: #0f172a;
+            color: #94a3b8;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+        }
+        .phase-card {
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+        .phase-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-bold text-blue-400 mb-2">Unity Racing Game Documentation</h1>
+            <p class="text-xl text-slate-300">Combined 2D Mobile Racing Game Implementation Guide</p>
+            <div class="mt-6 flex justify-center gap-4">
+                <span class="px-4 py-2 bg-blue-600 rounded-full text-sm">Unity 2022 LTS</span>
+                <span class="px-4 py-2 bg-emerald-600 rounded-full text-sm">C#</span>
+                <span class="px-4 py-2 bg-amber-600 rounded-full text-sm">Android Optimized</span>
+            </div>
+        </header>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-semibold text-blue-300 mb-6 border-b border-slate-700 pb-2">Game Overview</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-200 mb-3">Core Gameplay</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Endless runner with procedurally generated roads</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Touch-based lane switching mechanics</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Dynamic traffic system with increasing difficulty</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Multiple road types with unique physics (snow, desert, etc.)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Haptic feedback and immersive effects</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-200 mb-3">Technical Highlights</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Singleton pattern for core systems</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>ScriptableObjects for game configuration</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Object pooling for performance</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Multi-layer parallax background</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Threaded asset loading</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-semibold text-blue-300 mb-6 border-b border-slate-700 pb-2">Implementation Phases</h2>
+            <div class="space-y-6">
+                <!-- Phase 0 -->
+                <div class="phase-card bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-xl font-medium text-blue-200 mb-3">Phase 0: Pre-Production</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Assets Preparation</h4>
+                            <ul class="text-slate-400 space-y-1">
+                                <li>• Road segments: 1080x1920 pixels</li>
+                                <li>• 3 background layers for parallax</li>
+                                <li>• Car sprites with 3 variations each</li>
+                                <li>• Particle effects for road types</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Technical Specs</h4>
+                            <ul class="text-slate-400 space-y-1">
+                                <li>• Road type configuration sheets</li>
+                                <li>• Import settings for Android optimization</li>
+                                <li>• Scene hierarchy planning</li>
+                                <li>• Input system configuration</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 1 -->
+                <div class="phase-card bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-xl font-medium text-blue-200 mb-3">Phase 1: Core Systems</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">GameManager.cs</h4>
+                            <div class="code-block text-sm mb-4">
+                                <pre>public class GameManager : MonoBehaviour {
+    public static GameManager Instance;
+
+    [SerializeField] private RoadConfig[] roadConfigs;
+    private int currentRoadType;
+
+    void Awake() {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public void LoadSceneAsync(string sceneName) {
+        // Scene loading with transition queue
+    }
+}</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">AssetLoader.cs</h4>
+                            <div class="code-block text-sm">
+                                <pre>public class AssetLoader : MonoBehaviour {
+    public static IEnumerator LoadRoadSegmentAsync(string path) {
+        ResourceRequest request = Resources.LoadAsync&lt;GameObject&gt;(path);
+        while (!request.isDone) {
+            yield return null;
+        }
+        Instantiate(request.asset as GameObject);
+    }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="phase-card bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-xl font-medium text-blue-200 mb-3">Phase 2: Road System</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">RoadGenerator.cs</h4>
+                            <div class="code-block text-sm mb-4">
+                                <pre>public class RoadGenerator : MonoBehaviour {
+    [SerializeField] private GameObject[] roadSegments;
+    [SerializeField] private float segmentLength = 1920f;
+    private List&lt;GameObject&gt; activeSegments = new();
+
+    void Start() {
+        GenerateInitialSegments();
+    }
+
+    void GenerateInitialSegments() {
+        for (int i = 0; i < 3; i++) {
+            SpawnSegment(i * segmentLength);
+        }
+    }
+
+    void SpawnSegment(float zPosition) {
+        GameObject segment = Instantiate(
+            roadSegments[Random.Range(0, roadSegments.Length)],
+            new Vector3(0, 0, zPosition),
+            Quaternion.identity
+        );
+        activeSegments.Add(segment);
+    }
+}</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">RoadEffectsManager.cs</h4>
+                            <div class="code-block text-sm">
+                                <pre>public class RoadEffectsManager : MonoBehaviour {
+    [System.Serializable]
+    public class RoadEffect {
+        public RoadType type;
+        public ParticleSystem particles;
+        public float slipCoefficient;
+    }
+
+    [SerializeField] private RoadEffect[] effects;
+
+    public void ApplyEffects(RoadType type) {
+        foreach (var effect in effects) {
+            effect.particles.gameObject.SetActive(effect.type == type);
+        }
+    }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="phase-card bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-xl font-medium text-blue-200 mb-3">Phase 3: Player & Traffic</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">PlayerController.cs</h4>
+                            <div class="code-block text-sm mb-4">
+                                <pre>public class PlayerController : MonoBehaviour {
+    [SerializeField] private float laneChangeSpeed = 5f;
+    [SerializeField] private float[] lanePositions;
+    private int currentLane = 1;
+    private bool isChangingLanes = false;
+
+    void Update() {
+        if (Input.touchCount > 0) {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began) {
+                if (touch.position.x < Screen.width / 2) {
+                    MoveLeft();
+                } else {
+                    MoveRight();
+                }
+            }
+        }
+    }
+
+    void MoveLeft() {
+        if (currentLane > 0 && !isChangingLanes) {
+            StartCoroutine(ChangeLane(currentLane - 1));
+        }
+    }
+}</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">TrafficSystem.cs</h4>
+                            <div class="code-block text-sm">
+                                <pre>public class TrafficSystem : MonoBehaviour {
+    [SerializeField] private GameObject[] carPrefabs;
+    [SerializeField] private Transform[] lanes;
+    [SerializeField] private float minSpawnInterval = 1f;
+    [SerializeField] private float maxSpawnInterval = 3f;
+
+    private float nextSpawnTime;
+
+    void Update() {
+        if (Time.time > nextSpawnTime) {
+            SpawnCar();
+            nextSpawnTime = Time.time +
+                Mathf.Lerp(maxSpawnInterval, minSpawnInterval,
+                GameManager.Instance.Difficulty);
+        }
+    }
+
+    void SpawnCar() {
+        int lane = Random.Range(0, lanes.Length);
+        int carType = Random.Range(0, carPrefabs.Length);
+        Instantiate(carPrefabs[carType], lanes[lane].position, Quaternion.identity);
+    }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 4 -->
+                <div class="phase-card bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-xl font-medium text-blue-200 mb-3">Phase 4: Polish</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">HapticFeedback.cs</h4>
+                            <div class="code-block text-sm mb-4">
+                                <pre>public class HapticFeedback : MonoBehaviour {
+#if UNITY_ANDROID && !UNITY_EDITOR
+    private static AndroidJavaObject vibrationService;
+
+    static HapticFeedback() {
+        using (var plugin = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
+            vibrationService = plugin.GetStatic&lt;AndroidJavaObject&gt;("currentActivity")
+                .Call&lt;AndroidJavaObject&gt;("getSystemService", "vibrator");
+        }
+    }
+#endif
+
+    public static void Vibrate(long milliseconds) {
+#if UNITY_ANDROID && !UNITY_EDITOR
+        vibrationService.Call("vibrate", milliseconds);
+#endif
+    }
+}</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">CameraEffects.cs</h4>
+                            <div class="code-block text-sm">
+                                <pre>public class CameraEffects : MonoBehaviour {
+    [SerializeField] private float shakeDuration = 0.5f;
+    [SerializeField] private float shakeMagnitude = 0.1f;
+
+    private Vector3 originalPosition;
+    private float remainingShakeTime = 0f;
+
+    void Start() {
+        originalPosition = transform.localPosition;
+    }
+
+    void Update() {
+        if (remainingShakeTime > 0) {
+            transform.localPosition = originalPosition +
+                Random.insideUnitSphere * shakeMagnitude;
+            remainingShakeTime -= Time.deltaTime;
+        } else {
+            remainingShakeTime = 0f;
+            transform.localPosition = originalPosition;
+        }
+    }
+
+    public void Shake() {
+        remainingShakeTime = shakeDuration;
+    }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 5 -->
+                <div class="phase-card bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-xl font-medium text-blue-200 mb-3">Phase 5: Optimization</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">ObjectPool.cs</h4>
+                            <div class="code-block text-sm mb-4">
+                                <pre>public class ObjectPool : MonoBehaviour {
+    [System.Serializable]
+    public class Pool {
+        public string tag;
+        public GameObject prefab;
+        public int size;
+    }
+
+    public List&lt;Pool&gt; pools;
+    public Dictionary&lt;string, Queue&lt;GameObject&gt;&gt; poolDictionary;
+
+    void Start() {
+        poolDictionary = new Dictionary&lt;string, Queue&lt;GameObject&gt;&gt;();
+
+        foreach (Pool pool in pools) {
+            Queue&lt;GameObject&gt; objectPool = new Queue&lt;GameObject&gt;();
+
+            for (int i = 0; i < pool.size; i++) {
+                GameObject obj = Instantiate(pool.prefab);
+                obj.SetActive(false);
+                objectPool.Enqueue(obj);
+            }
+
+            poolDictionary.Add(pool.tag, objectPool);
+        }
+    }
+}</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Android Optimization</h4>
+                            <ul class="text-slate-400 space-y-2">
+                                <li>• Texture compression: ASTC 4x4</li>
+                                <li>• Target frame rate: 60 FPS</li>
+                                <li>• Physics update rate: 30 Hz</li>
+                                <li>• Disable vsync in Quality Settings</li>
+                                <li>• Use Addressables for asset management</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-semibold text-blue-300 mb-6 border-b border-slate-700 pb-2">Project Structure</h2>
+            <div class="file-structure mb-8">
+                <pre>Assets/
+├── Scripts/
+│   ├── Core/
+│   │   ├── GameManager.cs
+│   │   ├── AssetLoader.cs
+│   │   ├── SceneLoader.cs
+│   ├── Gameplay/
+│   │   ├── RoadSystem/
+│   │   │   ├── RoadGenerator.cs
+│   │   │   ├── RoadEffectsManager.cs
+│   │   ├── Player/
+│   │   │   ├── PlayerController.cs
+│   │   │   ├── PlayerPhysics.cs
+│   │   ├── Traffic/
+│   │   │   ├── TrafficSystem.cs
+│   │   │   ├── CarAI.cs
+│   ├── UI/
+│   │   ├── UIManager.cs
+│   │   ├── GameOverManager.cs
+│   │   ├── MenuSystem.cs
+│   ├── Utilities/
+│   │   ├── ObjectPool.cs
+│   │   ├── HapticFeedback.cs
+│   │   ├── CameraEffects.cs
+├── Art/
+│   ├── Sprites/
+│   │   ├── Roads/
+│   │   │   ├── Snowy/
+│   │   │   ├── Desert/
+│   │   ├── Vehicles/
+│   │   │   ├── Player/
+│   │   │   ├── Enemy/
+│   ├── Particles/
+│   │   ├── Snow/
+│   │   ├── Dust/
+├── Audio/
+│   ├── Music/
+│   │   ├── MainTheme.ogg
+│   │   ├── IntenseTheme.ogg
+│   ├── SFX/
+│   │   ├── Crash.wav
+│   │   ├── Engine.wav
+├── Scenes/
+│   ├── MainMenu.unity
+│   ├── Game.unity
+│   ├── Loading.unity
+├── Settings/
+│   ├── RoadConfigs/
+│   │   ├── SnowyRoad.asset
+│   │   ├── DesertRoad.asset
+│   ├── GameSettings.asset
+│   ├── DifficultySettings.asset</pre>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-semibold text-blue-300 mb-6 border-b border-slate-700 pb-2">Unity Implementation Guide</h2>
+            <div class="space-y-6">
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-200 mb-3">Step 1: Project Setup</h3>
+                    <ol class="list-decimal list-inside text-slate-300 space-y-2">
+                        <li>Create new Unity project (2D template)</li>
+                        <li>Set build target to Android</li>
+                        <li>Configure Player Settings:
+                            <ul class="list-disc list-inside ml-6 mt-1">
+                                <li>Company Name and Product Name</li>
+                                <li>Minimum API Level: Android 8.0 (Oreo)</li>
+                                <li>Orientation: Landscape</li>
+                            </ul>
+                        </li>
+                        <li>Import essential assets (sprites, sounds)</li>
+                        <li>Create folder structure as shown above</li>
+                    </ol>
+                </div>
+
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-200 mb-3">Step 2: Core Systems Implementation</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">GameManager Setup</h4>
+                            <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                                <li>Create empty GameObject named "_GameManager"</li>
+                                <li>Add GameManager script component</li>
+                                <li>Create RoadConfig ScriptableObjects</li>
+                                <li>Configure in Inspector</li>
+                                <li>Set as prefab in Resources folder</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Scene Management</h4>
+                            <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                                <li>Create Loading scene with progress bar</li>
+                                <li>Add SceneLoader script</li>
+                                <li>Build settings: Add all scenes in order</li>
+                                <li>Implement scene transition animations</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-200 mb-3">Step 3: Road System Implementation</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Road Generation</h4>
+                            <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                                <li>Import road segment sprites</li>
+                                <li>Create RoadGenerator empty GameObject</li>
+                                <li>Add RoadGenerator script</li>
+                                <li>Configure segments in Inspector</li>
+                                <li>Test infinite generation</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Road Effects</h4>
+                            <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                                <li>Create particle systems for each road type</li>
+                                <li>Add RoadEffectsManager to scene</li>
+                                <li>Configure effects in Inspector</li>
+                                <li>Test transitions between road types</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-200 mb-3">Step 4: Player & Traffic</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Player Setup</h4>
+                            <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                                <li>Import player car sprite</li>
+                                <li>Create Player prefab with:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>SpriteRenderer</li>
+                                        <li>Rigidbody2D</li>
+                                        <li>BoxCollider2D</li>
+                                        <li>PlayerController script</li>
+                                    </ul>
+                                </li>
+                                <li>Configure input settings</li>
+                                <li>Test lane changing mechanics</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Traffic System</h4>
+                            <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                                <li>Import enemy car sprites</li>
+                                <li>Create TrafficSystem empty GameObject</li>
+                                <li>Add TrafficSystem script</li>
+                                <li>Configure spawn points and intervals</li>
+                                <li>Test difficulty progression</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-200 mb-3">Step 5: Polish & Effects</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Visual Effects</h4>
+                            <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                                <li>Add CameraEffects script to main camera</li>
+                                <li>Configure shake parameters</li>
+                                <li>Implement near-miss color flash</li>
+                                <li>Add post-processing effects</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-300 mb-2">Audio System</h4>
+                            <ol class="list-decimal list-inside text-slate-400 text-sm space-y-1">
+                                <li>Import sound effects and music</li>
+                                <li>Create AudioManager empty GameObject</li>
+                                <li>Add AudioManager script</li>
+                                <li>Configure audio clips</li>
+                                <li>Test dynamic music transitions</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-semibold text-blue-300 mb-6 border-b border-slate-700 pb-2">System Startup</h2>
+            <div class="bg-slate-800 p-6 rounded-lg">
+                <ol class="list-decimal list-inside text-slate-300 space-y-4">
+                    <li>
+                        <strong>Initial Scene:</strong> The game starts with the `MainMenu` scene.
+                    </li>
+                    <li>
+                        <strong>Core Systems Initialization:</strong>
+                        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-slate-400">
+                            <li>An empty GameObject named `_GameManager` (or similar) should be present in the `MainMenu` scene.</li>
+                            <li>This GameObject should have the `GameManager`, `SceneLoader`, `ObjectPool`, and `AudioManager` (if you create one) scripts attached.</li>
+                            <li>The `GameManager` script uses `DontDestroyOnLoad` to persist across scene changes, ensuring a single instance.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Game Start:</strong>
+                        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-slate-400">
+                            <li>The `MenuSystem` script on a UI button in `MainMenu` calls `SceneLoader.Instance.LoadScene("Game")`.</li>
+                            <li>The `SceneLoader` first loads the `Loading` scene, displays a progress bar, and then loads the `Game` scene asynchronously in the background.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Gameplay Scene Setup:</strong>
+                        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-slate-400">
+                            <li>The `Game` scene contains the `RoadGenerator`, `TrafficSystem`, and `UIManager`.</li>
+                            <li>The player's car prefab is instantiated. The `RoadGenerator` and `TrafficSystem` find the player using `GameObject.FindGameObjectWithTag("Player")`.</li>
+                            <li>The `RoadGenerator` begins creating the road segments.</li>
+                            <li>The `TrafficSystem` starts spawning cars based on the game's difficulty, which is managed by the `GameManager`.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Game Over:</strong>
+                        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-slate-400">
+                            <li>Upon collision (`PlayerPhysics.cs`), the `GameManager` is notified.</li>
+                            <li>The `GameManager` can store the final score (e.g., in `PlayerPrefs`) and then calls `SceneLoader.Instance.LoadScene("GameOver")`.</li>
+                            <li>The `GameOver` scene displays the final score and provides options to restart or return to the main menu, handled by `GameOverManager.cs`.</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-semibold text-blue-300 mb-6 border-b border-slate-700 pb-2">Testing & Deployment</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-200 mb-3">Testing Checklist</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Test on multiple Android devices (varying specs)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Verify touch controls responsiveness</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Check memory usage with Profiler</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Test all road type transitions</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Verify difficulty progression</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-200 mb-3">Build Settings</h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Texture compression: ASTC</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Strip Engine Code: Enabled</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Minify: Proguard (Android)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Target Architecture: ARMv7 + ARM64</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">•</span>
+                            <span>Configure Keystore for release</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-12 pt-6 border-t border-slate-700 text-center text-slate-400">
+            <p>Unity Racing Game Documentation - Combined Implementation Guide</p>
+            <p class="mt-2 text-sm">For Android mobile devices - Optimized for performance</p>
+        </footer>
+    </div>
+</body>
+</html>
