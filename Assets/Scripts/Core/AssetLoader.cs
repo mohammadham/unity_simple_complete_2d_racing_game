@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class AssetLoader : MonoBehaviour {
     public static IEnumerator LoadRoadSegmentAsync(string path) {

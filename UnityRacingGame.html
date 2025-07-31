@@ -592,49 +592,6 @@
         </section>
 
         <section class="mb-16">
-            <h2 class="text-2xl font-semibold text-blue-300 mb-6 border-b border-slate-700 pb-2">System Startup</h2>
-            <div class="bg-slate-800 p-6 rounded-lg">
-                <ol class="list-decimal list-inside text-slate-300 space-y-4">
-                    <li>
-                        <strong>Initial Scene:</strong> The game starts with the `MainMenu` scene.
-                    </li>
-                    <li>
-                        <strong>Core Systems Initialization:</strong>
-                        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-slate-400">
-                            <li>An empty GameObject named `_GameManager` (or similar) should be present in the `MainMenu` scene.</li>
-                            <li>This GameObject should have the `GameManager`, `SceneLoader`, `ObjectPool`, and `AudioManager` (if you create one) scripts attached.</li>
-                            <li>The `GameManager` script uses `DontDestroyOnLoad` to persist across scene changes, ensuring a single instance.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <strong>Game Start:</strong>
-                        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-slate-400">
-                            <li>The `MenuSystem` script on a UI button in `MainMenu` calls `SceneLoader.Instance.LoadScene("Game")`.</li>
-                            <li>The `SceneLoader` first loads the `Loading` scene, displays a progress bar, and then loads the `Game` scene asynchronously in the background.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <strong>Gameplay Scene Setup:</strong>
-                        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-slate-400">
-                            <li>The `Game` scene contains the `RoadGenerator`, `TrafficSystem`, and `UIManager`.</li>
-                            <li>The player's car prefab is instantiated. The `RoadGenerator` and `TrafficSystem` find the player using `GameObject.FindGameObjectWithTag("Player")`.</li>
-                            <li>The `RoadGenerator` begins creating the road segments.</li>
-                            <li>The `TrafficSystem` starts spawning cars based on the game's difficulty, which is managed by the `GameManager`.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <strong>Game Over:</strong>
-                        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-slate-400">
-                            <li>Upon collision (`PlayerPhysics.cs`), the `GameManager` is notified.</li>
-                            <li>The `GameManager` can store the final score (e.g., in `PlayerPrefs`) and then calls `SceneLoader.Instance.LoadScene("GameOver")`.</li>
-                            <li>The `GameOver` scene displays the final score and provides options to restart or return to the main menu, handled by `GameOverManager.cs`.</li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
-        </section>
-
-        <section class="mb-16">
             <h2 class="text-2xl font-semibold text-blue-300 mb-6 border-b border-slate-700 pb-2">Testing & Deployment</h2>
             <div class="grid md:grid-cols-2 gap-6">
                 <div class="bg-slate-800 p-6 rounded-lg">
@@ -687,6 +644,23 @@
                         </li>
                     </ul>
                 </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-semibold text-blue-300 mb-6 border-b border-slate-700 pb-2">Startup System</h2>
+            <div class="bg-slate-800 p-6 rounded-lg">
+                <h3 class="text-lg font-medium text-blue-200 mb-3">Startup sequence</h3>
+                <ol class="list-decimal list-inside text-slate-300 space-y-2">
+                    <li>The game starts with the `MainMenu` scene.</li>
+                    <li>The `MenuSystem` script handles the UI and player input.</li>
+                    <li>Pressing the "Start Game" button calls `MenuSystem.StartGame()`.</li>
+                    <li>`StartGame()` uses the `SceneLoader` to load the `Game` scene.</li>
+                    <li>The `GameManager` is a singleton that persists across scenes.</li>
+                    <li>In the `Game` scene, the `RoadGenerator` starts creating the road.</li>
+                    <li>The `TrafficSystem` begins spawning cars.</li>
+                    <li>The `PlayerController` waits for player input to start moving the car.</li>
+                </ol>
             </div>
         </section>
 

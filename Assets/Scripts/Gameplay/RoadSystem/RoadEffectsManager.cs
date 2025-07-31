@@ -1,5 +1,7 @@
 using UnityEngine;
 
+public enum RoadType { Snowy, Desert, Normal }
+
 public class RoadEffectsManager : MonoBehaviour {
     [System.Serializable]
     public class RoadEffect {
@@ -8,20 +10,11 @@ public class RoadEffectsManager : MonoBehaviour {
         public float slipCoefficient;
     }
 
-    public enum RoadType {
-        Normal,
-        Snow,
-        Desert
-    }
-
     [SerializeField] private RoadEffect[] effects;
 
     public void ApplyEffects(RoadType type) {
         foreach (var effect in effects) {
-            if (effect.particles != null) {
-                effect.particles.gameObject.SetActive(effect.type == type);
-            }
+            effect.particles.gameObject.SetActive(effect.type == type);
         }
-        // You would also apply the slip coefficient to the player's physics here
     }
 }

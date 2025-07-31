@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class CameraEffects : MonoBehaviour {
     [SerializeField] private float shakeDuration = 0.5f;
@@ -14,7 +13,8 @@ public class CameraEffects : MonoBehaviour {
 
     void Update() {
         if (remainingShakeTime > 0) {
-            transform.localPosition = originalPosition + Random.insideUnitSphere * shakeMagnitude;
+            transform.localPosition = originalPosition +
+                Random.insideUnitSphere * shakeMagnitude;
             remainingShakeTime -= Time.deltaTime;
         } else {
             remainingShakeTime = 0f;
@@ -23,7 +23,6 @@ public class CameraEffects : MonoBehaviour {
     }
 
     public void Shake() {
-        originalPosition = transform.localPosition;
         remainingShakeTime = shakeDuration;
     }
 }

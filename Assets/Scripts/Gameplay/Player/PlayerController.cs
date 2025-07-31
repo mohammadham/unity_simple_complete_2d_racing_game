@@ -1,67 +1,48 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
     [SerializeField] private float laneChangeSpeed = 5f;
-    [SerializeField] private float[] lanePositions = new float[]{-2.5f, 0f, 2.5f}; // Example positions
+    [SerializeField] private float[] lanePositions;
     private int currentLane = 1;
     private bool isChangingLanes = false;
-    private Vector3 targetPosition;
-
-    void Start() {
-        transform.position = new Vector3(lanePositions[currentLane], transform.position.y, transform.position.z);
-        targetPosition = transform.position;
-    }
 
     void Update() {
-        HandleInput();
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, laneChangeSpeed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, targetPosition) < 0.01f) {
-            isChangingLanes = false;
-        }
-    }
-
-    private void HandleInput() {
-        if (isChangingLanes) return;
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || GetTouchInput() == -1) {
-            MoveLeft();
-        } else if (Input.GetKeyDown(KeyCode.RightArrow) || GetTouchInput() == 1) {
-            MoveRight();
-        }
-    }
-
-    private int GetTouchInput() {
         if (Input.touchCount > 0) {
             Touch touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began) {
                 if (touch.position.x < Screen.width / 2) {
-                    return -1; // Left
+                    MoveLeft();
                 } else {
-                    return 1; // Right
+                    MoveRight();
                 }
             }
         }
-        return 0; // No touch
     }
 
     void MoveLeft() {
-        if (currentLane > 0) {
-            currentLane--;
-            StartLaneChange();
+        if (currentLane > 0 && !isChangingLanes) {
+            StartCoroutine(ChangeLane(currentLane - 1));
         }
     }
 
     void MoveRight() {
-        if (currentLane < lanePositions.Length - 1) {
-            currentLane++;
-            StartLaneChange();
+        if (currentLane < lanePositions.Length - 1 && !isChangingLanes) {
+            StartCoroutine(ChangeLane(currentLane + 1));
         }
     }
 
-    void StartLaneChange() {
+    IEnumerator ChangeLane(int targetLane)
+    {
         isChangingLanes = true;
-        targetPosition = new Vector3(lanePositions[currentLane], transform.position.y, transform.position.z);
+        float targetX = lanePositions[targetLane];
+        while (Mathf.Abs(transform.position.x - targetX) > 0.01f)
+        {
+            transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * laneChangeSpeed), transform.position.y, transform.position.z);
+            yield return null;
+        }
+        transform.position = new Vector3(targetX, transform.position.y, transform.position.z);
+        currentLane = targetLane;
+        isChangingLanes = false;
     }
 }
